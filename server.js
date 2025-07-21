@@ -28,7 +28,10 @@ const app = express();
 //This lets Express parse incoming JSON in request bodies.
 app.use(bodyParser.json());
 //This allows the frontend to make requests to the backend without being blocked.
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true
+}));
 
 // Test only - when you have a database variable you want to use
 app.get('/', (req, res) => {
@@ -77,6 +80,7 @@ app.post('/signin', (req, res) => {
 // This accesses the data you input in the register page.
 app.post('/register', (req, res) => {
   const { email, name, password } = req.body;
+  res.setHeader('Content-Type', 'application/json');
   
   // Validate input
   if (!email || !name || !password) {
@@ -242,6 +246,7 @@ app.put('/image', (req, res) => {
 });
 
 //This starts your Express server on port 3000 and logs a message to confirm it's running.
-app.listen(3000, () => {
-    console.log('App is running on port 3000');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`App is running on port ${PORT}`);
 });
